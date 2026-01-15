@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Live Packet Sniffer Dashboard</title>
+<meta charset="utf-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); 
+  color: #00ff41; font-family: 'Courier New', monospace; 
+  min-height: 100vh; padding: 20px;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+h1 { 
+  font-size: 2.5em; text-align: center; 
+  background: linear-gradient(45deg, #00ff41, #00bfff); 
+   -webkit-text-fill-color: transparent;
+  margin-bottom: 30px; text-shadow: 0 0 20px #00ff41;
+}
+.stats { display: flex; gap: 20px; margin-bottom: 30px; }
+.stat-card { 
+  flex: 1; background: rgba(0,255,65,0.1); 
+  border: 1px solid #00ff41; border-radius: 10px; 
+  padding: 20px; text-align: center;
+}
+.stat-number { font-size: 2em; color: #ffeb3b; }
+table { 
+  width: 100%; border-collapse: collapse; 
+  background: rgba(0,0,0,0.8); border-radius: 10px; 
+  overflow: hidden; box-shadow: 0 10px 30px rgba(0,255,65,0.3);
+}
+th { 
+  background: linear-gradient(90deg, #00ff41, #00bfff); 
+  color: #000; padding: 15px; text-transform: uppercase; 
+  font-size: 0.9em; letter-spacing: 1px;
+}
+td { padding: 12px 15px; border-bottom: 1px solid #333; }
+.live-packet { animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.btn { 
+  background: linear-gradient(45deg, #ff0040, #ff4081); 
+  color: white; border: none; padding: 15px 30px; 
+  border-radius: 50px; font-size: 1.1em; 
+  cursor: pointer; box-shadow: 0 5px 15px rgba(255,0,64,0.4);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,0,64,0.6); }
+@media (max-width: 768px) { .stats { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="container">
+<h1> Live Packet Sniffer Dashboard</h1>
+<div style="text-align:right; margin-bottom:20px;">
+<a href="/start"><button class="btn"> Start Capture</button></a>
+</div>
+
+<div class="stats">
+<div class="stat-card">
+<div>Total Packets</div>
+<div class="stat-number">{{packets|length}}</div>
+</div>
+<div class="stat-card">
+<div>Active Connections</div>
+<div class="stat-number">{{connections|length}}</div>
+</div>
+</div>
+
+<h2 style="color:#00bfff; margin:30px 0 15px 0;"> Recent Packets</h2>
+<table>
+<tr><th>Time</th><th>Source IP</th><th>Dest IP</th><th>Protocol</th><th>Size</th></tr>
+{% for p in packets %}
+<tr><td>{{p.time}}</td><td>{{p.src}}</td><td>{{p.dst}}</td><td class="live-packet">{{p.proto}}</td><td>{{p.len}}B</td></tr>
+{% endfor %}
+</table>
+
+<h2 style="color:#00bfff; margin:30px 0 15px 0;"> Top Connections</h2>
+<table>
+<tr><th>Connection</th><th>Packets</th></tr>
+{% for conn, count in connections.items() %}
+<tr><td>{{conn}}</td><td style="color:#ffeb3b;font-weight:bold;">{{count}}</td></tr>
+{% endfor %}
+</table>
+</div>
+</body>
+</html>
